@@ -87,3 +87,10 @@ java banking API - http://java-app:8080/v3/api-docs.yaml
    ```
 
 ### 5. Rest to SOAP genration.
+
+
+https://apim.docs.wso2.com/en/latest/api-design-manage/design/create-api/create-rest-api/generate-rest-api-from-soap-backend/
+
+Phone number - 18006785432
+
+License - 0
