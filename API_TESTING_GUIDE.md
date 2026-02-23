@@ -93,6 +93,20 @@ Sample output:
 <?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ban="urn:banking:soap"><soapenv:Header/><soapenv:Body><ban:GetBalanceResponse><ban:AccountId>1001</ban:AccountId><ban:Balance>12500.50</ban:Balance><ban:Currency>USD</ban:Currency><ban:Status>ACTIVE</ban:Status></ban:GetBalanceResponse></soapenv:Body></soapenv:Envelope>
 ```
 
+### 2.6 Swagger Petstore backend (direct)
+
+URL:
+
+```bash
+curl -s "http://localhost:5007/api/v3/openapi.json"
+```
+
+Sample output (truncated):
+
+```json
+{"openapi":"3.0.4","info":{"title":"Swagger Petstore","description":"This is a sample server Petstore server.","version":"1.0.28"}}
+```
+
 ---
 
 ## 3) APIs from MI URL and output
@@ -271,3 +285,14 @@ Expected output (same as MI):
   "status": "ACTIVE"
 }
 ```
+
+### 4.6 Swagger Petstore imported directly to APIM
+
+Example URL:
+
+```bash
+curl -k --resolve api-uat.example.com:443:127.0.0.1 \
+  "https://api-uat.example.com:443/petstore/1.0.0/api/v3/openapi.json"
+```
+
+Expected output: OpenAPI JSON for Petstore.
