@@ -1,0 +1,10 @@
+---
+key: "SMSGatewayRouting-1.0.0"
+name : "SMSGatewayRouting"
+displayName : "SMSGatewayRouting"
+description: "SMSGatewayRouting"
+version: "1.0.0"
+serviceUrl: "https://{MI_HOST}:{MI_PORT}/smsgateway"
+definitionType: "OAS3"
+securityType: "BASIC"
+mutualSSLEnabled: false

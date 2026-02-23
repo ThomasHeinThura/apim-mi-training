@@ -1,0 +1,45 @@
+openapi: 3.0.3
+info:
+  title: GetCustomerDetails
+  version: 1.0.0
+  description: API for retrieving customer details (import into WSO2 API Manager)
+servers:
+  - url: https://{host}
+    variables:
+      host:
+        default: guarant-backend.example.com
+paths:
+  /getcustomerdetails:
+    post:
+      summary: Get customer details
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                customerCode:
+                  type: string
+                  example: CIF001
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customerCode:
+                    type: string
+                  name:
+                    type: string
+                  accounts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        iban:
+                          type: string
+                        balance:
+                          type: number

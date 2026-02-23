@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="GD_CustomerDetails_Seq" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <call>
+        <endpoint key="GD_CustomerDetails_EP"/>
+    </call>
+    <property name="first_status_code" expression="$axis2:HTTP_SC" scope="default"/>
+    <filter source="get-property('first_status_code')" regex ="502">
+        <then>
+            <store messageStore="GD_CustomerMessageStore"/>
+        </then>
+        <else>
+        </else>
+    </filter>
+</sequence>

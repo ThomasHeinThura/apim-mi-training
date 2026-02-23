@@ -1,0 +1,194 @@
+{
+  "info": {
+    "_postman_id": "a8e3e8f9-7f57-40de-a6c6-2ec68c88f6ff",
+    "name": "APIM-MI Backend + MI + APIM Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "backend_java", "value": "http://localhost:5004" },
+    { "key": "backend_dotnet", "value": "http://localhost:5002" },
+    { "key": "backend_gd", "value": "http://localhost:5003" },
+    { "key": "backend_wso2demo", "value": "http://localhost:5005" },
+    { "key": "backend_soap", "value": "http://localhost:5006" },
+    { "key": "mi_base", "value": "http://localhost:8290" },
+    { "key": "apim_gateway", "value": "https://api-uat.example.com:443" },
+    { "key": "java_api_key", "value": "TEST-API-KEY-12345" }
+  ],
+  "item": [
+    {
+      "name": "1. Backend APIs",
+      "item": [
+        {
+          "name": "Java Banking - Balance",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "X-API-KEY", "value": "{{java_api_key}}" }
+            ],
+            "url": "{{backend_java}}/api/banking/balance/1"
+          }
+        },
+        {
+          "name": "Dotnet Banking - User",
+          "request": {
+            "method": "GET",
+            "url": "{{backend_dotnet}}/api/portal/user/user1"
+          }
+        },
+        {
+          "name": "Guaranteed Delivery Backend - Customer",
+          "request": {
+            "method": "GET",
+            "url": "{{backend_gd}}/api/v1/customerdetails?customerCode=CIF001"
+          }
+        },
+        {
+          "name": "WSO2DemoApis Backend - Check Blacklist",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"123\"\n}"
+            },
+            "url": "{{backend_wso2demo}}/api/v1/kyc/check-blacklist"
+          }
+        },
+        {
+          "name": "SOAP Banking Backend - Get Balance",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "text/xml" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ban=\"urn:banking:soap\"><soapenv:Header/><soapenv:Body><ban:GetBalanceRequest><ban:AccountId>1001</ban:AccountId></ban:GetBalanceRequest></soapenv:Body></soapenv:Envelope>"
+            },
+            "url": "{{backend_soap}}/soap"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. MI APIs",
+      "item": [
+        {
+          "name": "GuaranteedDeliveryDemo via MI - Get Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": "{{mi_base}}/getcustomerdetails"
+          }
+        },
+        {
+          "name": "WSO2DemoApis via MI - Check KYC",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nrc\": \"12/AhSaNa(N)999999\"\n}"
+            },
+            "url": "{{mi_base}}/checkkyc"
+          }
+        },
+        {
+          "name": "WSO2DemoApis via MI - SMS Gateway",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mobileNumber\": \"09751234567\"\n}"
+            },
+            "url": "{{mi_base}}/smsgateway"
+          }
+        },
+        {
+          "name": "WSO2DemoApis via MI - Multi API Call",
+          "request": {
+            "method": "GET",
+            "url": "{{mi_base}}/multiapicall"
+          }
+        },
+        {
+          "name": "SOAP Banking via MI REST - Balance",
+          "request": {
+            "method": "GET",
+            "url": "{{mi_base}}/soapbanking/balance/1001"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. APIM APIs (After Import & Publish)",
+      "item": [
+        {
+          "name": "Java Banking via APIM",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "X-API-KEY", "value": "{{java_api_key}}" }
+            ],
+            "url": "{{apim_gateway}}/java-banking/1.0.0/api/banking/balance/1"
+          }
+        },
+        {
+          "name": "Dotnet Banking via APIM",
+          "request": {
+            "method": "GET",
+            "url": "{{apim_gateway}}/dotnet-banking/1.0.0/api/portal/user/user1"
+          }
+        },
+        {
+          "name": "GuaranteedDeliveryDemo via APIM",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": "{{apim_gateway}}/gd-mi/1.0.0/getcustomerdetails"
+          }
+        },
+        {
+          "name": "WSO2DemoApis via APIM",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nrc\": \"12/AhSaNa(N)999999\"\n}"
+            },
+            "url": "{{apim_gateway}}/wso2demo-mi/1.0.0/checkkyc"
+          }
+        },
+        {
+          "name": "SOAP Banking via APIM (through MI)",
+          "request": {
+            "method": "GET",
+            "url": "{{apim_gateway}}/soapbanking-mi/1.0.0/soapbanking/balance/1001"
+          }
+        }
+      ]
+    }
+  ]
+}

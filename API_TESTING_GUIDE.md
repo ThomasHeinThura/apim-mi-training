@@ -1,109 +1,273 @@
 # API Testing Guide
 
-This guide explains how to test all backend APIs after running the standalone stack from `apim-mi-docker`.
+This guide is organized exactly as requested:
 
-## 1) Start the stack
+1. Normal backend APIs (direct service URLs + output)
+2. APIs from MI (URLs + output)
+3. APIs from APIM (URLs + expected output)
 
-From the `apim-mi-docker` folder:
+## 1) Prerequisite
+
+From `apim-mi-docker`:
 
 ```bash
 docker compose up -d
 docker compose ps
 ```
 
-Make sure services are `Up` (and health checks are healthy where defined).
+---
 
-## 2) Test MySQL seed data
+## 2) Normal backend APIs URL and output
+
+### 2.1 Java Banking App (direct to backend)
+
+URL:
 
 ```bash
-docker exec demo-mysql mysql -uroot -proot -e "SELECT COUNT(*) AS users_count FROM banking_db.users;"
+curl -s -H "X-API-KEY: TEST-API-KEY-12345" "http://localhost:5004/api/banking/balance/1"
 ```
 
-Expected: `users_count` should be at least `100`.
+Sample output:
 
-## 3) Backend API smoke tests
-
-### 3.1 Demo APIs (.NET)
-
-```bash
-curl -i "http://localhost:5001/api/v1/customerdetails?customerCode=CIF001"
+```json
+{"id":1,"username":"user1","email":"user1@example.com","balance":1000.00,"createdAt":"2026-02-23T18:32:08"}
 ```
 
-Expected: `HTTP/1.1 200` with customer details JSON.
+### 2.2 Dotnet Banking App (direct to backend)
 
-### 3.2 Dotnet Banking App (.NET)
+URL:
 
 ```bash
-curl -i "http://localhost:5002/api/portal/user/user1"
+curl -s "http://localhost:5002/api/portal/user/user1"
 ```
 
-Expected: `HTTP/1.1 200` with user profile JSON.
+Sample output:
 
-### 3.3 Guaranteed Delivery (Python)
-
-```bash
-curl -i "http://localhost:5003/api/v1/customerdetails?customerCode=CIF001"
+```json
+{"id":1,"username":"user1","email":"user1@example.com","balance":1000.00,"createdAt":"2026-02-23T18:32:08"}
 ```
 
-Expected: `HTTP/1.1 200` with customer/account JSON.
+### 2.3 Guaranteed Delivery backend (direct to backend)
 
-### 3.4 Java Banking App (Spring Boot)
-
-This API is protected by API key.
+URL:
 
 ```bash
-curl -i -H "X-API-KEY: TEST-API-KEY-12345" "http://localhost:5004/api/banking/balance/1"
+curl -s "http://localhost:5003/api/v1/customerdetails?customerCode=CIF001"
 ```
 
-Expected: `HTTP/1.1 200`.
+Sample output:
 
-If header is missing, expected response is `401 Unauthorized`.
+```json
+{"accounts":[{"balance":1000.0,"iban":"GB00AAAA00000000000000"}],"customerCode":"CIF001","name":"John Doe"}
+```
 
-### 3.5 WSO2 Demo APIs (Python)
+### 2.4 WSO2DemoApis backend (direct to backend)
+
+URLs:
 
 ```bash
-curl -i -X POST "http://localhost:5005/api/v1/kyc/check-blacklist" \
+curl -s -X POST "http://localhost:5005/api/v1/kyc/check-blacklist" -H "Content-Type: application/json" -d '{"id":"123"}'
+curl -s -X POST "http://localhost:5005/api/v1/kyc/check-onboarded" -H "Content-Type: application/json" -d '{"id":"123"}'
+```
+
+Sample output:
+
+```json
+{"blacklisted":false,"details":{"id":"123"}}
+{"onboarded":true,"details":{"id":"123"}}
+```
+
+### 2.5 SOAP Banking backend (direct SOAP)
+
+URL:
+
+```bash
+curl -s -X POST "http://localhost:5006/soap" \
+  -H "Content-Type: text/xml" \
+  -d '<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ban="urn:banking:soap"><soapenv:Header/><soapenv:Body><ban:GetBalanceRequest><ban:AccountId>1001</ban:AccountId></ban:GetBalanceRequest></soapenv:Body></soapenv:Envelope>'
+```
+
+Sample output:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ban="urn:banking:soap"><soapenv:Header/><soapenv:Body><ban:GetBalanceResponse><ban:AccountId>1001</ban:AccountId><ban:Balance>12500.50</ban:Balance><ban:Currency>USD</ban:Currency><ban:Status>ACTIVE</ban:Status></ban:GetBalanceResponse></soapenv:Body></soapenv:Envelope>
+```
+
+---
+
+## 3) APIs from MI URL and output
+
+### 3.1 GuaranteedDeliveryDemo via MI
+
+URL:
+
+```bash
+curl -s -X POST "http://localhost:8290/getcustomerdetails" -H "Content-Type: application/json" -d '{}'
+```
+
+Sample output:
+
+```json
+{"accounts":[{"balance":1000.0,"iban":"GB00AAAA00000000000000"}],"customerCode":"CIF001","name":"John Doe"}
+```
+
+### 3.2 WSO2DemoApis via MI (KYC)
+
+URL:
+
+```bash
+curl -s -X POST "http://localhost:8290/checkkyc" -H "Content-Type: application/json" -d '{"nrc":"12/AhSaNa(N)999999"}'
+```
+
+Sample output:
+
+```json
+{"blacklisted":false,"details":{"nrc":"12/AhSaNa(N)999999"}}
+```
+
+### 3.3 WSO2DemoApis via MI (SMS routing)
+
+URL:
+
+```bash
+curl -s -X POST "http://localhost:8290/smsgateway" -H "Content-Type: application/json" -d '{"mobileNumber":"09751234567"}'
+```
+
+Sample output:
+
+```json
+{"operator":"atom","status":"ok"}
+```
+
+### 3.4 WSO2DemoApis via MI (multi API call)
+
+URL:
+
+```bash
+curl -s "http://localhost:8290/multiapicall"
+```
+
+Current output:
+
+```json
+{"Customer":{"firstName":"","lastName":"","nrc":"","email":""},"Account":{"accountNumber":"","accountType":""}}
+```
+
+### 3.5 SOAP backend mapped by MI as REST API
+
+URL:
+
+```bash
+curl -s "http://localhost:8290/soapbanking/balance/1001"
+```
+
+Sample output:
+
+```json
+{
+  "accountId": "1001",
+  "balance": "12500.50",
+  "currency": "USD",
+  "status": "ACTIVE"
+}
+```
+
+---
+
+## 4) APIs from APIM URL and output
+
+After importing and publishing APIs in APIM, use gateway URL through nginx:
+
+- APIM Publisher UI: `https://am-uat.example.com:443/publisher/`
+- APIM Gateway base: `https://api-uat.example.com:443`
+
+If you are testing locally, use host mapping in curl:
+
+```bash
+curl -k --resolve api-uat.example.com:443:127.0.0.1 "https://api-uat.example.com:443/<api-context>/<version>/<resource>"
+```
+
+### 4.1 Java Banking imported directly to APIM
+
+Example URL (adjust to your published context/version):
+
+```bash
+curl -k --resolve api-uat.example.com:443:127.0.0.1 \
+  "https://api-uat.example.com:443/java-banking/1.0.0/api/banking/balance/1" \
+  -H "X-API-KEY: TEST-API-KEY-12345"
+```
+
+Expected output (same as backend):
+
+```json
+{"id":1,"username":"user1","email":"user1@example.com","balance":1000.00,"createdAt":"2026-02-23T18:32:08"}
+```
+
+### 4.2 Dotnet Banking imported directly to APIM
+
+Example URL:
+
+```bash
+curl -k --resolve api-uat.example.com:443:127.0.0.1 \
+  "https://api-uat.example.com:443/dotnet-banking/1.0.0/api/portal/user/user1"
+```
+
+Expected output (same as backend):
+
+```json
+{"id":1,"username":"user1","email":"user1@example.com","balance":1000.00,"createdAt":"2026-02-23T18:32:08"}
+```
+
+### 4.3 GuaranteedDeliveryDemo imported to MI then APIM
+
+Example URL:
+
+```bash
+curl -k --resolve api-uat.example.com:443:127.0.0.1 \
+  -X POST "https://api-uat.example.com:443/gd-mi/1.0.0/getcustomerdetails" \
   -H "Content-Type: application/json" \
-  -d '{"id":"123"}'
+  -d '{}'
 ```
 
-Expected: `HTTP/1.1 200` with blacklist result JSON.
+Expected output (same as MI):
 
-## 4) One-shot smoke test commands
-
-```bash
-curl -s -o /dev/null -w "demoapis:%{http_code}\n" "http://localhost:5001/api/v1/customerdetails?customerCode=CIF001"
-curl -s -o /dev/null -w "dotnet-app:%{http_code}\n" "http://localhost:5002/api/portal/user/user1"
-curl -s -o /dev/null -w "guaranteed-delivery:%{http_code}\n" "http://localhost:5003/api/v1/customerdetails?customerCode=CIF001"
-curl -s -o /dev/null -w "java-app:%{http_code}\n" -H "X-API-KEY: TEST-API-KEY-12345" "http://localhost:5004/api/banking/balance/1"
-curl -s -o /dev/null -w "wso2demoapis:%{http_code}\n" -X POST "http://localhost:5005/api/v1/kyc/check-blacklist" -H "Content-Type: application/json" -d '{"id":"123"}'
+```json
+{"accounts":[{"balance":1000.0,"iban":"GB00AAAA00000000000000"}],"customerCode":"CIF001","name":"John Doe"}
 ```
 
-Expected: all services return `200`.
+### 4.4 WSO2DemoApis imported to MI then APIM
 
-## 5) Troubleshooting
-
-- Check container state:
+Example URL:
 
 ```bash
-docker compose ps
+curl -k --resolve api-uat.example.com:443:127.0.0.1 \
+  -X POST "https://api-uat.example.com:443/wso2demo-mi/1.0.0/checkkyc" \
+  -H "Content-Type: application/json" \
+  -d '{"nrc":"12/AhSaNa(N)999999"}'
 ```
 
-- Check logs for specific service:
+Expected output (same as MI):
 
-```bash
-docker compose logs --tail=200 <service-name>
+```json
+{"blacklisted":false,"details":{"nrc":"12/AhSaNa(N)999999"}}
 ```
 
-- Restart one service:
+### 4.5 SOAP backend (through MI) imported to APIM
+
+Example URL:
 
 ```bash
-docker compose restart <service-name>
+curl -k --resolve api-uat.example.com:443:127.0.0.1 \
+  "https://api-uat.example.com:443/soapbanking-mi/1.0.0/soapbanking/balance/1001"
 ```
 
-- Recreate full stack:
+Expected output (same as MI):
 
-```bash
-docker compose down --remove-orphans
-docker compose up -d
+```json
+{
+  "accountId": "1001",
+  "balance": "12500.50",
+  "currency": "USD",
+  "status": "ACTIVE"
+}
 ```

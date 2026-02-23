@@ -1,0 +1,72 @@
+openapi: 3.0.3
+info:
+  title: WSO2 Demo APIs
+  version: 1.0.0
+  description: Collection of MI APIs for demo and import into WSO2 API Manager
+servers:
+  - url: https://{host}
+    variables:
+      host:
+        default: demo-backend.example.com
+paths:
+  /multiapicall:
+    get:
+      summary: Aggregate customer and account details
+      responses:
+        "200":
+          description: Combined response
+          content:
+            application/json:
+              schema:
+                type: object
+  /checkkyc:
+    post:
+      summary: Check KYC and optionally blacklist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nrc:
+                  type: string
+      responses:
+        "200":
+          description: KYC check response
+          content:
+            application/json:
+              schema:
+                type: object
+  /smsgateway:
+    post:
+      summary: Route SMS to operator
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mobileNumber:
+                  type: string
+                message:
+                  type: string
+      responses:
+        "200":
+          description: Delivery routing result
+  /transformparamvalue:
+    post:
+      summary: Transform account number parameter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accountNumber:
+                  type: string
+      responses:
+        "200":
+          description: Transformed parameter

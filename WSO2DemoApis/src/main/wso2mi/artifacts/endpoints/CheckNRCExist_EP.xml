@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint name="CheckNRCExist_EP" xmlns="http://ws.apache.org/ns/synapse">
+    <http method="post" uri-template="http://wso2demoapis-backend:8080/api/v1/kyc/check-onboarded">
+        <suspendOnFailure>
+            <initialDuration>-1</initialDuration>
+            <progressionFactor>1</progressionFactor>
+        </suspendOnFailure>
+        <markForSuspension>
+            <retriesBeforeSuspension>0</retriesBeforeSuspension>
+        </markForSuspension>
+    </http>
+</endpoint>

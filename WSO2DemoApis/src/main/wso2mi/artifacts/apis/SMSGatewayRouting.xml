@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/smsgateway" name="SMSGatewayRouting" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="POST" uri-template="/">
+        <inSequence>
+            <property name="varmobileNumber" scope="default" type="STRING" expression="json-eval($.mobileNumber)"/>
+            <switch source="get-property('varmobileNumber')">
+                <case regex="^(?:\+?959|09)(75|76|77|78|79)\d+">
+                    <call>
+                        <endpoint key="Atom_EP"/>
+                    </call>
+                    <respond/>
+                </case>
+                <case regex="^(?:\+?959|09)9\d+">
+                    <!-- <header name="x-rapidapi-host" action="set" scope="transport" value="open-weather13.p.rapidapi.com"/>
+                    <header name="x-rapidapi-key" action="set" scope="transport" value="0e31154357mshc928a011360272ap1dace6jsn897aa53d2e83"/> -->
+                    <header name="Content-Type" value="application/json" scope="transport"/>
+                    <call>
+                        <endpoint key="Ooredoo_EP"/>
+                    </call>
+                    <respond/>
+                </case>
+                <case regex="^(?:\+?959|09)(2|4|5|73|8|91)\d+">
+                    <!-- <header name="x-rapidapi-host" action="set" scope="transport" value="meteostat.p.rapidapi.com"/>
+                    <header name="x-rapidapi-key" action="set" scope="transport" value="0e31154357mshc928a011360272ap1dace6jsn897aa53d2e83"/> -->
+                    <header name="Content-Type" value="application/json" scope="transport"/>
+                    <call>
+                        <endpoint key="MPT_EP"/>
+                    </call>
+                    <respond/>
+                </case>
+                <default>
+                    <payloadFactory media-type="json" template-type="default">
+                        <format>{ "error": "Invalid Operator"}</format>
+                    </payloadFactory>
+                    <respond/>
+                </default>
+            </switch>
+        </inSequence>
+        <faultSequence>
+        </faultSequence>
+    </resource>
+</api>

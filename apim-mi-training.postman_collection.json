@@ -1,0 +1,197 @@
+{
+  "info": {
+    "_postman_id": "860a1661-d96c-4f90-ae78-4e738f2804c0",
+    "name": "apim-mi-training",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "33754283"
+  },
+  "item": [
+    {
+      "name": "api-docs backend",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://100.106.228.112:8080/v3/api-docs.yaml",
+          "protocol": "http",
+          "host": [
+            "100",
+            "106",
+            "228",
+            "112"
+          ],
+          "port": "8080",
+          "path": [
+            "v3",
+            "api-docs.yaml"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "check with ip balance",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-API-KEY",
+            "value": "TEST-API-KEY-12345"
+          }
+        ],
+        "url": {
+          "raw": "http://192.168.139.219:8080/api/banking/balance/1",
+          "protocol": "http",
+          "host": [
+            "192",
+            "168",
+            "139",
+            "219"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "banking",
+            "balance",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "check with netbird ip",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-API-KEY",
+            "value": "TEST-API-KEY-12345"
+          }
+        ],
+        "url": {
+          "raw": "http://100.106.228.112:8080/api/banking/balance/1",
+          "protocol": "http",
+          "host": [
+            "100",
+            "106",
+            "228",
+            "112"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "banking",
+            "balance",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "check with netbird ip two",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-API-KEY",
+            "value": "TEST-API-KEY-12345"
+          }
+        ],
+        "url": {
+          "raw": "http://100.106.228.112:8080/api/banking/history/1",
+          "protocol": "http",
+          "host": [
+            "100",
+            "106",
+            "228",
+            "112"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "banking",
+            "history",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "check with wso2 apim",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "accept",
+            "value": "*/*"
+          },
+          {
+            "key": "Internal-Key",
+            "value": "eyJraWQiOiJnYXRld2F5X2NlcnRpZmljYXRlX2FsaWFzIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiJhZG1pbkBjYXJib24uc3VwZXIiLCJhdWQiOiIzNDBkNzUzNC0xY2RjLTRiYzgtOTMyOC1jMzk0OTUwNmNlMTMiLCJpc3MiOiJodHRwczovL2FtLmJpbWF0cy5jb206NDQzL29hdXRoMi90b2tlbiIsImtleXR5cGUiOiJQUk9EVUNUSU9OIiwic3Vic2NyaWJlZEFQSXMiOlt7Im5hbWUiOiJCYW5raW5nQVBJIiwiY29udGV4dCI6Ii9iYW5raW5nYXBpLzEuMCIsInZlcnNpb24iOiIxLjAiLCJwdWJsaXNoZXIiOiJhZG1pbiIsInN1YnNjcmlwdGlvblRpZXIiOm51bGwsInN1YnNjcmliZXJUZW5hbnREb21haW4iOm51bGx9XSwiZXhwIjoxNzcwNjY5ODU1LCJ0b2tlbl90eXBlIjoiSW50ZXJuYWxLZXkiLCJpYXQiOjE3NzA2MDk4NTUsImp0aSI6IjllNGI5OTAyLWEzMmYtNGRlNS1hNDE1LWIyMmZjMzY5ZDNmYiJ9.iy6FEN0Wd7S8we8kWUBuvVyDGtfrlA-F7lcWA_OzsbK2-BKm5Z4iY1t43dlTVoN_OsM_q8io12LIKT--BotJbrfaSBO-_idT4iBE5jKUWcWN7e_v84thyZSg1mJljbqw6_ZhAicuji5S3IErdMjAavqpD1_-dYhBrXq9LtgQl-ocyH60r5gn1NL4sPvpeZP982rdv9rMjdxQv-2vuX6pv-JiGRocoDUfnwPlG1dqWR2q8_hPOv23g2Y-vD02iF5bJMHBr8Ac6q1BR2rmS3keYrhEqu8Mn2sQEehSnEcNbNKUQpjozMIIY6wq0qkXpkOkpPmaX5S2tS5v-C7ZjDgYag"
+          },
+          {
+            "key": "X-API-KEY",
+            "value": "TEST-API-KEY-12345",
+            "type": "text",
+            "disabled": true
+          }
+        ],
+        "url": {
+          "raw": "https://api.bimats.com/bankingapi/1.0/api/banking/history/1",
+          "protocol": "https",
+          "host": [
+            "api",
+            "bimats",
+            "com"
+          ],
+          "path": [
+            "bankingapi",
+            "1.0",
+            "api",
+            "banking",
+            "history",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "chck with wso2 apim",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "accept",
+            "value": "*/*"
+          },
+          {
+            "key": "Internal-Key",
+            "value": "eyJraWQiOiJnYXRld2F5X2NlcnRpZmljYXRlX2FsaWFzIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiJhZG1pbkBjYXJib24uc3VwZXIiLCJhdWQiOiIzNDBkNzUzNC0xY2RjLTRiYzgtOTMyOC1jMzk0OTUwNmNlMTMiLCJpc3MiOiJodHRwczovL2FtLmJpbWF0cy5jb206NDQzL29hdXRoMi90b2tlbiIsImtleXR5cGUiOiJQUk9EVUNUSU9OIiwic3Vic2NyaWJlZEFQSXMiOlt7Im5hbWUiOiJCYW5raW5nQVBJIiwiY29udGV4dCI6Ii9iYW5raW5nYXBpLzEuMCIsInZlcnNpb24iOiIxLjAiLCJwdWJsaXNoZXIiOiJhZG1pbiIsInN1YnNjcmlwdGlvblRpZXIiOm51bGwsInN1YnNjcmliZXJUZW5hbnREb21haW4iOm51bGx9XSwiZXhwIjoxNzcwNzEyODA2LCJ0b2tlbl90eXBlIjoiSW50ZXJuYWxLZXkiLCJpYXQiOjE3NzA2NTI4MDYsImp0aSI6ImI5YTY4OTI0LWJmMDctNDg2OS1hZTY3LWVkYzRiNGExZDFjNCJ9.Kx9VMdE4Z49pE-mKld149FN92mrT3HdXVOV7qzTZ5Fp9lqHqNtlveF53SGAICX_d2voZ0iwoNnd-s7GNytxLpk3CAps99VCQ9Y4AKOtzxz8_nj-PAiYMreVPnH6BTeJziJxeY47ese7TlCL2ir933ZAB_k1xz4_J0dSPnNUQsqBAvpo9N8hrZkUPai80t-EGpznUvTmVqRH36Ah2TYSwbK_BRzxlgH75H_XEaoKq-ZKPXWKXQKIvNobI3esJM2O7qh_9Pqo-MfJ5nnrJhGx8eUPJuuKnGaA0x7nz6tiVyYZQEKnS841AWsXnIgk19if8WcXaWAGHWTEVdRYZSo7PDQ"
+          }
+        ],
+        "url": {
+          "raw": "https://api.bimats.com/bankingapi/1.0/api/banking/history/1",
+          "protocol": "https",
+          "host": [
+            "api",
+            "bimats",
+            "com"
+          ],
+          "path": [
+            "bankingapi",
+            "1.0",
+            "api",
+            "banking",
+            "history",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/checkkyc" name="CheckBlackListCustomer" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="POST" uri-template="/">
+        <inSequence>
+            <property name="messageType" scope="axis2" type="STRING" value="application/json"/>
+            <property name="ContentType" scope="axis2" type="STRING" value="application/json"/>
+            <property name="nrc" scope="default" type="STRING" expression="json-eval($.nrc)"/>
+            <filter source="get-property('nrc')" regex="^\s*$">
+                <then>
+                    <property name="HTTP_SC" value="400" scope="axis2"/>
+                    <payloadFactory media-type="json">
+                        <format>{ "error": "nrc is required" }</format>
+                    </payloadFactory>
+                    <respond/>
+                </then>
+            </filter>
+
+            <!-- ========== 1) CALL CheckNRCExist ========== -->
+            <payloadFactory media-type="json">
+                <format>
+                    {
+                    "nrc": "$1"
+                    }
+                </format>
+                <args>
+                    <arg evaluator="json" expression="$ctx:nrc"></arg>
+                </args>
+            </payloadFactory>
+            <header name="Content-Type" value="application/json" scope="transport"/>
+            <call>
+                <endpoint key="CheckNRCExist_EP"/>
+            </call>
+            <!-- Capture first response details -->
+            <property name="first_status_code" expression="$axis2:HTTP_SC" scope="default"/>
+            <property name="first_message" expression="json-eval($.message)" scope="default"/>
+            <log>
+                <property name="respStatuscode" expression="get-property('first_status_code')"/>
+            </log>
+            <!-- <filter source="get-property('first_message')" regex="(?i).*passed.*"> -->
+            <filter source="get-property('first_status_code')" regex="200">
+                <then>
+                    <payloadFactory media-type="json">
+                        <format>
+                            {
+                            "nrc":"$1"
+                            }
+                        </format>
+                        <args>
+                            <arg evaluator="json" expression="$ctx:nrc"></arg>
+                        </args>
+                    </payloadFactory>
+                    <header name="Content-Type" value="application/json" scope="transport"/>
+                    <call>
+                        <endpoint key="CheckBlackList_EP"/>
+                    </call>
+                    <respond/>
+                </then>
+                <else>
+                    <!-- Do NOT call blacklist; return first API result as-is -->
+                    <property name="HTTP_SC" expression="get-property('first_status_code')" scope="axis2"/>
+                    <!-- Body is already the first call's body -->
+                    <respond/>
+                </else>
+            </filter>
+        </inSequence>
+        <!-- <outSequence>
+            <send/>
+        </outSequence> -->
+        <faultSequence>
+            <property name="HTTP_SC" value="500" scope="axis2"/>
+            <payloadFactory media-type="json">
+                <format>{ "error":"Internal error", "details":"$1" }</format>
+                <args>
+                    <arg evaluator="xml" expression="get-property('ERROR_MESSAGE')"/>
+                </args>
+            </payloadFactory>
+            <respond/>
+        </faultSequence>
+    </resource>
+</api>

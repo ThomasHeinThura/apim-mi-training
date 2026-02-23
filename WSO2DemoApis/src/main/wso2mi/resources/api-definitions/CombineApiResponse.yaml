@@ -1,0 +1,13 @@
+openapi: 3.0.1
+info:
+  title: MultiApiCall
+  description: API Definition of MultiApiCall
+  version: 1.0.0
+servers:
+- url: http://localhost:8290/multiapicall
+paths:
+  /:
+    get:
+      responses:
+        default:
+          description: Default response

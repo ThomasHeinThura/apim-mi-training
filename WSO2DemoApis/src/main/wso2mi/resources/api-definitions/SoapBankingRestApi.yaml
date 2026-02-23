@@ -1,0 +1,32 @@
+openapi: 3.0.1
+info:
+  title: SoapBankingRestApi
+  description: REST facade in MI for SOAP Banking backend
+  version: 1.0.0
+servers:
+  - url: http://localhost:8290/soapbanking
+paths:
+  /balance/{accountId}:
+    get:
+      parameters:
+        - in: path
+          name: accountId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accountId:
+                    type: string
+                  balance:
+                    type: string
+                  currency:
+                    type: string
+                  status:
+                    type: string

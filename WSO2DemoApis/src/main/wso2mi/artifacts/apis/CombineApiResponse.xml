@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/multiapicall" name="MultiApiCall" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="GET" uri-template="/">
+        <inSequence>
+            <clone id="parallelcall">
+                <target sequence="CustomerDetails_Seq"/>
+                <target sequence="AccountDetails_Seq"/>
+            </clone>
+            <aggregate id="parallelcall">
+                <completeCondition timeout="0">
+                    <messageCount max="-1" min="2"/>
+                </completeCondition>
+                <onComplete aggregateElementType="root" expression="json-eval($)">
+                    <payloadFactory media-type="json" template-type="default">
+                        <format>
+                            {
+                            "Customer":{
+                            "firstName":"$1",
+                            "lastName":"$2",
+                            "nrc":"$3",
+                            "email":"$4"
+                            },
+                            "Account":{
+                            "accountNumber":"$5",
+                            "accountType":"$6"
+                            }
+                            }
+                        </format>
+                        <!-- <format>{
+                            "user": {
+                            "id": "$1",
+                            "firstName": "$2",
+                            "lastName": "$3",
+                            "email": "$4"
+                            },
+                            "product": {
+                            "id": "$5",
+                            "title": "$6",
+                            "price": $7,
+                            "image": "$8"
+                            }
+                            }</format> -->
+                        <args>
+                            <arg evaluator="json" expression="json-eval($[0].firstName)"/>
+                            <arg evaluator="json" expression="json-eval($[0].lastName)"/>
+                            <arg evaluator="json" expression="json-eval($[0].nrc)"/>
+                            <arg evaluator="json" expression="json-eval($[0].email)"/>
+                            <arg evaluator="json" expression="json-eval($[1].accountNumber)"/>
+                            <arg evaluator="json" expression="json-eval($[1].accountType)"/>
+                        </args>
+                    </payloadFactory>
+                    <respond/>
+                </onComplete>
+            </aggregate>
+        </inSequence>
+        <faultSequence>
+        </faultSequence>
+    </resource>
+</api>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/transformparamvalue" name="ParameterValueTransform" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="POST" uri-template="/">
+        <inSequence>
+            <propertyGroup>
+                <!-- <property name="accountNumber" scope="default" type="STRING" expression="json-eval($.)"/> -->
+                <property name="accNum" scope="default" type="STRING" expression="json-eval($.accountNumber)"/>
+            </propertyGroup>
+            <switch source="${properties.synapse.accNum}">
+                <case regex="^\d{4}$">
+                    <property name="modifiedAccountNumber" scope="default" expression="concat('00',get-property('accNum'))"/>
+                    <payloadFactory media-type="json" template-type="default">
+                        <format>
+                            {
+                            "newAccountNumber": "$1"
+                            }
+                        </format>
+                        <args>
+                            <arg evaluator="json" expression="$ctx:modifiedAccountNumber"></arg>
+                        </args>
+                    </payloadFactory>
+                </case>
+                <case regex="^\d{5}$">
+                    <property name="modifiedAccountNumber" scope="default" expression="concat('0',get-property('accNum'))"/>
+                    <payloadFactory media-type="json" template-type="default">
+                        <format>
+                            {
+                            "newAccountNumber": "$1"
+                            }
+                        </format>
+                        <args>
+                            <arg evaluator="json" expression="$ctx:modifiedAccountNumber"></arg>
+                        </args>
+                    </payloadFactory>
+                </case>
+                <default>
+                    <payloadFactory media-type="json" template-type="default">
+                        <format>
+                            {
+                            "message": "Invalid Account Number"
+                            }
+                        </format>
+                        <args>
+                            <arg evaluator="json" expression="$ctx:modifiedAccountNumber"></arg>
+                        </args>
+                    </payloadFactory>
+                </default>
+            </switch>
+            <respond/>
+        </inSequence>
+        <faultSequence>
+        </faultSequence>
+    </resource>
+</api>

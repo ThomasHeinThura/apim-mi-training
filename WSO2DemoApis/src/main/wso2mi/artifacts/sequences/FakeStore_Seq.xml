@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="FakeStore_Seq" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <header name="Accept" value="application/json" scope="transport"/>
+    <header name="Accept-Encoding" value="identity" scope="transport"/>
+    <call>
+        <endpoint key="FakeStore_EP"/>
+    </call>
+</sequence>

@@ -1,0 +1,10 @@
+---
+key: "ParameterValueTransformation-1.0.0"
+name : "ParameterValueTransformation"
+displayName : "ParameterValueTransformation"
+description: "ParameterValueTransformation"
+version: "1.0.0"
+serviceUrl: "https://{MI_HOST}:{MI_PORT}/transformparamvalue"
+definitionType: "OAS3"
+securityType: "BASIC"
+mutualSSLEnabled: false

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/soapbanking" name="SoapBankingRestApi" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="GET" uri-template="/balance/{accountId}">
+        <inSequence>
+            <property name="accountId" expression="get-property('uri.var.accountId')" scope="default" type="STRING"/>
+            <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+            <property name="ContentType" scope="axis2" type="STRING" value="text/xml"/>
+            <payloadFactory media-type="xml">
+                <format>
+                    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ban="urn:banking:soap">
+                        <soapenv:Header/>
+                        <soapenv:Body>
+                            <ban:GetBalanceRequest>
+                                <ban:AccountId>$1</ban:AccountId>
+                            </ban:GetBalanceRequest>
+                        </soapenv:Body>
+                    </soapenv:Envelope>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:accountId"/>
+                </args>
+            </payloadFactory>
+            <call>
+                <endpoint key="SoapBankBackend_EP"/>
+            </call>
+            <property name="resAccountId" expression="//*[local-name()='AccountId']/text()" scope="default"/>
+            <property name="resBalance" expression="//*[local-name()='Balance']/text()" scope="default"/>
+            <property name="resCurrency" expression="//*[local-name()='Currency']/text()" scope="default"/>
+            <property name="resStatus" expression="//*[local-name()='Status']/text()" scope="default"/>
+            <property name="messageType" scope="axis2" type="STRING" value="application/json"/>
+            <property name="ContentType" scope="axis2" type="STRING" value="application/json"/>
+            <payloadFactory media-type="json">
+                <format>{
+                    "accountId": "$1",
+                    "balance": "$2",
+                    "currency": "$3",
+                    "status": "$4"
+                }</format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:resAccountId"/>
+                    <arg evaluator="xml" expression="$ctx:resBalance"/>
+                    <arg evaluator="xml" expression="$ctx:resCurrency"/>
+                    <arg evaluator="xml" expression="$ctx:resStatus"/>
+                </args>
+            </payloadFactory>
+            <respond/>
+        </inSequence>
+        <faultSequence>
+            <property name="HTTP_SC" value="500" scope="axis2"/>
+            <payloadFactory media-type="json">
+                <format>{"error":"SOAP backend call failed"}</format>
+            </payloadFactory>
+            <respond/>
+        </faultSequence>
+    </resource>
+</api>
