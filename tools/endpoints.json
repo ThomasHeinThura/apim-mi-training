@@ -1,0 +1,4 @@
+[
+  {"name": "Petstore (backend)", "method": "GET", "url": "http://localhost:5007/api/v3/openapi.json"},
+  {"name": "Petstore (APIM)", "method": "GET", "url": "http://localhost:8280/petstore/1.0.0/api/v3/openapi.json"}
+]
