@@ -4,7 +4,7 @@ name: "SoapBankingRestApi"
 displayName: "SoapBankingRestApi"
 description: "REST API in MI mapped to SOAP banking backend"
 version: "1.0.0"
-serviceUrl: "https://{MI_HOST}:{MI_PORT}/soapbanking"
+serviceUrl: "http://micro-integrator:8290/soapbanking"
 definitionType: "OAS3"
 securityType: "BASIC"
 mutualSSLEnabled: false
