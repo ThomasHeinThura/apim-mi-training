@@ -1,0 +1,10 @@
+---
+key: "BankingProxyApi-1.0.0"
+name: "BankingProxyApi"
+displayName: "BankingProxyApi"
+description: "Direct Banking APIs and Users Summary API"
+version: "1.0.0"
+serviceUrl: "https://{MI_HOST}:{MI_PORT}/banking"
+definitionType: "OAS3"
+securityType: "BASIC"
+mutualSSLEnabled: false

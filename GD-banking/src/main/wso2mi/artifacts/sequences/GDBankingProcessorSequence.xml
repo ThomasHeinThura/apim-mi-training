@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="GD_Banking_Transaction_Processor_Seq" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <call>
+        <endpoint key="BankingTransaction_EP"/>
+    </call>
+    <log level="custom">
+        <property name="GD_Banking_ReplayStatus" expression="$axis2:HTTP_SC"/>
+    </log>
+</sequence>

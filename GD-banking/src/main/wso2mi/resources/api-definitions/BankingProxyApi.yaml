@@ -1,0 +1,78 @@
+openapi: 3.0.1
+info:
+  title: BankingProxyApi
+  description: Banking APIs with guaranteed delivery for transactions plus users summary from MySQL.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8290/banking
+paths:
+  /transaction:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: integer
+                  example: 1
+                amount:
+                  type: number
+                  format: double
+                  example: 100.00
+                type:
+                  type: string
+                  enum: [CREDIT, DEBIT]
+      responses:
+        "202":
+          description: Transaction accepted and queued for guaranteed delivery
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: QUEUED
+                  message:
+                    type: string
+  /balance/{userId}:
+    get:
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User balance from Java backend
+  /history/{userId}:
+    get:
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User transaction history from Java backend
+  /users/summary:
+    get:
+      responses:
+        "200":
+          description: Total users and total amount from MySQL users table
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalUsers:
+                    type: integer
+                    example: 100
+                  totalAmount:
+                    type: number
+                    example: 100000.00

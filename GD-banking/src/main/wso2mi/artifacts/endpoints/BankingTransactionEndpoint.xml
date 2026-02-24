@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint name="BankingTransaction_EP" xmlns="http://ws.apache.org/ns/synapse">
+    <http method="post" uri-template="http://java-app:8080/api/banking/transaction"/>
+</endpoint>

@@ -1,0 +1,162 @@
+{
+  "info": {
+    "name": "GD-Banking Guaranteed Delivery",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Test guaranteed delivery flow for Java banking backend via WSO2 MI"
+  },
+  "item": [
+    {
+      "name": "POST Transaction (MI Guaranteed Delivery)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": {{userId}},\n  \"amount\": 10.00,\n  \"type\": \"CREDIT\"\n}"
+        },
+        "url": {
+          "raw": "{{miBaseUrl}}/banking/transaction",
+          "host": [
+            "{{miBaseUrl}}"
+          ],
+          "path": [
+            "banking",
+            "transaction"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 202', function () {",
+              "  pm.response.to.have.status(202);",
+              "});",
+              "",
+              "pm.test('Response contains QUEUED status', function () {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body).to.have.property('status', 'QUEUED');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Balance (MI Direct Proxy)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{miBaseUrl}}/banking/balance/{{userId}}",
+          "host": [
+            "{{miBaseUrl}}"
+          ],
+          "path": [
+            "banking",
+            "balance",
+            "{{userId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get History (MI Direct Proxy)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{miBaseUrl}}/banking/history/{{userId}}",
+          "host": [
+            "{{miBaseUrl}}"
+          ],
+          "path": [
+            "banking",
+            "history",
+            "{{userId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Users Summary (MI -> MySQL)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{miBaseUrl}}/banking/users/summary",
+          "host": [
+            "{{miBaseUrl}}"
+          ],
+          "path": [
+            "banking",
+            "users",
+            "summary"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Summary has totalUsers and totalAmount', function () {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body).to.have.property('totalUsers');",
+              "  pm.expect(body).to.have.property('totalAmount');",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "miBaseUrl",
+      "value": "http://localhost:8290"
+    },
+    {
+      "key": "userId",
+      "value": "1"
+    }
+  ]
+}

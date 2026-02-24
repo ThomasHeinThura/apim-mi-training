@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/banking" name="BankingProxyApi" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="POST" uri-template="/transaction">
+        <inSequence>
+            <property name="messageType" scope="axis2" type="STRING" value="application/json"/>
+            <property name="HTTP_SC" scope="axis2" type="STRING" value="202"/>
+            <store messageStore="GD_BankingMessageStore"/>
+            <payloadFactory media-type="json">
+                <format>{"status":"QUEUED","message":"Transaction queued for guaranteed delivery"}</format>
+                <args/>
+            </payloadFactory>
+            <respond/>
+        </inSequence>
+        <faultSequence>
+            <property name="HTTP_SC" value="500" scope="axis2"/>
+            <payloadFactory media-type="json">
+                <format>{"error":"Failed to process transaction"}</format>
+                <args/>
+            </payloadFactory>
+            <respond/>
+        </faultSequence>
+    </resource>
+
+    <resource methods="GET" uri-template="/balance/{userId}">
+        <inSequence>
+            <property name="messageType" scope="axis2" type="STRING" value="application/json"/>
+            <property name="ContentType" scope="axis2" type="STRING" value="application/json"/>
+            <call>
+                <endpoint key="BankingBalance_EP"/>
+            </call>
+            <respond/>
+        </inSequence>
+        <faultSequence>
+            <property name="HTTP_SC" value="500" scope="axis2"/>
+            <payloadFactory media-type="json">
+                <format>{"error":"Failed to fetch balance"}</format>
+                <args/>
+            </payloadFactory>
+            <respond/>
+        </faultSequence>
+    </resource>
+
+    <resource methods="GET" uri-template="/history/{userId}">
+        <inSequence>
+            <property name="messageType" scope="axis2" type="STRING" value="application/json"/>
+            <property name="ContentType" scope="axis2" type="STRING" value="application/json"/>
+            <call>
+                <endpoint key="BankingHistory_EP"/>
+            </call>
+            <respond/>
+        </inSequence>
+        <faultSequence>
+            <property name="HTTP_SC" value="500" scope="axis2"/>
+            <payloadFactory media-type="json">
+                <format>{"error":"Failed to fetch history"}</format>
+                <args/>
+            </payloadFactory>
+            <respond/>
+        </faultSequence>
+    </resource>
+
+    <resource methods="GET" uri-template="/users/summary">
+        <inSequence>
+            <property name="messageType" scope="axis2" type="STRING" value="application/json"/>
+            <property name="ContentType" scope="axis2" type="STRING" value="application/json"/>
+            <dblookup>
+                <connection>
+                    <pool>
+                        <driver>com.mysql.cj.jdbc.Driver</driver>
+                        <url>jdbc:mysql://mysql:3306/banking_db</url>
+                        <user>bank_user</user>
+                        <password>SecurePass123!</password>
+                    </pool>
+                </connection>
+                <statement>
+                    <sql>SELECT COUNT(*) AS total_users, COALESCE(SUM(balance),0) AS total_amount FROM users</sql>
+                    <result column="total_users" name="total_users"/>
+                    <result column="total_amount" name="total_amount"/>
+                </statement>
+            </dblookup>
+            <payloadFactory media-type="json">
+                <format>{"totalUsers":$1,"totalAmount":$2}</format>
+                <args>
+                    <arg expression="$ctx:total_users"/>
+                    <arg expression="$ctx:total_amount"/>
+                </args>
+            </payloadFactory>
+            <respond/>
+        </inSequence>
+        <faultSequence>
+            <property name="HTTP_SC" value="500" scope="axis2"/>
+            <payloadFactory media-type="json">
+                <format>{"error":"Failed to fetch users summary"}</format>
+                <args/>
+            </payloadFactory>
+            <respond/>
+        </faultSequence>
+    </resource>
+</api>
